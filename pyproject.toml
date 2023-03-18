@@ -1,0 +1,21 @@
+[tool.poetry]
+name = "speech-to-text-to-speech"
+version = "0.1.0"
+description = ""
+authors = ["Ventior <SamuelBeck16@gmail.com>"]
+readme = "README.md"
+packages = [{include = "speech_to_text_to_speech"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+pynput = "^1.7.6"
+httpx = "^0.23.3"
+speechrecognition = "^3.10.0"
+voicevox-client = "^0.1.5"
+translatepy = "^2.3"
+pyaudio = "^0.2.13"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
