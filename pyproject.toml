@@ -14,6 +14,8 @@ speechrecognition = "^3.10.0"
 voicevox-client = "^0.1.5"
 translatepy = "^2.3"
 pyaudio = "^0.2.13"
+pip = "^23.0.1"
+python-dotenv = "^1.0.0"
 
 
 [build-system]
