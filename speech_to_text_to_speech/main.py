@@ -1,24 +1,18 @@
 import asyncio
 import logging
+import sys
 import pynput
 import httpcore
 import httpx
 import speech_recognition as sr
 import translatepy.translators
 from voicevox import Client
+from speech_to_text_to_speech import RECORD_KEY, STOP_KEY
 
 # Setup of the Logger
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    handlers=[
-        logging.FileHandler("debug.log", 'w', 'utf-8'),
-        logging.StreamHandler()
-    ]
-)
 
 r = sr.Recognizer()
-RECORD_KEY = '+'
+gtranslate = translatepy.translators.GoogleTranslate()
 
 
 def show_mic_list():
@@ -94,9 +88,6 @@ async def get_speaker(send_speaker: bool):
     return int(speaker)
 
 
-
-
-
 def keyboard_input():
     # Starts a keyboard listener - may cause inputlag
     def on_press(key):
@@ -105,6 +96,8 @@ def keyboard_input():
             if key.char == RECORD_KEY:
                 running = not running
                 logging.info(f"Set running to {running}")
+            elif key.char == STOP_KEY:
+                sys.exit()
         except AttributeError:
             pass
 
@@ -116,7 +109,6 @@ def keyboard_input():
 
 show_mic_list()
 chosen_mic = get_mic()
-gtranslate = translatepy.translators.GoogleTranslate()
 keyboard_input()
 speaker = asyncio.run(get_speaker(True))
 running = False
