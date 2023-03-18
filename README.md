@@ -14,7 +14,7 @@ Easy to use script to translate your voice to Japanese and make it sound like an
 ## How to use
 To use this project, you can run the following command:
 
-`poetry run python src/main.py` 
+`poetry run python speech-to-text-to-speech/main.py` 
 
 ## License
 This project is licensed under the GNU General Public License v3.0 License. See the LICENSE file for more information.
