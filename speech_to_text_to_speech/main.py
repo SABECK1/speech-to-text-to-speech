@@ -13,16 +13,9 @@ from speech_to_text_to_speech.playsound import play_sound
 SOUNDFILE_NAME = os.getenv("SOUNDFILE_NAME")
 RECORD_KEY = os.getenv("RECORD_KEY")
 STOP_KEY = os.getenv("STOP_KEY")
-# Setup of the Logger
 
 r = sr.Recognizer()
 gtranslate = translatepy.translators.GoogleTranslate()
-
-
-def show_mic_list():
-    # Shows all microphone inputs/outputs - needs to be changed to only inputs
-    for i, microphone_name in enumerate(sr.Microphone.list_microphone_names()):
-        print(i, microphone_name)
 
 
 def get_user_input():
@@ -31,8 +24,11 @@ def get_user_input():
     return chosen_microphone
 
 
-def get_mic():
+def get_mic(send_mics: bool):
     # Gets executed recursively if no correct input is given
+    for i, microphone_name in enumerate(sr.Microphone.list_microphone_names()):
+        print(i, microphone_name)
+
     chosen_microphone = get_user_input()
     if chosen_microphone.upper() == "DEFAULT":
         return None
@@ -40,7 +36,7 @@ def get_mic():
         sr.Microphone.list_microphone_names()[int(chosen_microphone)]
     except ValueError:
         print("Not a valid choice!")
-        chosen_microphone = get_mic()
+        chosen_microphone = get_mic(False)
     return int(chosen_microphone)
 
 
@@ -79,7 +75,7 @@ def keyboard_input():
     listener.start()
 
 
-async def get_translation():
+async def get_japanese_translation():
     # Gets translation to give to Voicevox
     with sr.Microphone(device_index=chosen_mic) as source:
         logging.info("Adjusting...")
@@ -94,7 +90,7 @@ async def get_translation():
             return translation.result
         except:
             logging.error("Unknown Translation")
-            await get_translation()
+            await get_japanese_translation()
 
 
 async def synthesize(speaker: int):
@@ -102,7 +98,7 @@ async def synthesize(speaker: int):
     async with Client() as client:
         try:
             print(speaker)
-            audio_query = await client.create_audio_query("こんにちは私はサミュエルです", speaker=8)
+            audio_query = await client.create_audio_query(await get_japanese_translation(), speaker=speaker)
             logging.info("Synthesizing...")
             with open(SOUNDFILE_NAME, "wb") as f:
                 f.write(await audio_query.synthesis(speaker=speaker))
@@ -112,15 +108,12 @@ async def synthesize(speaker: int):
             logging.info("Finished synthesizing")
 
 
-
-
 async def main():
     await synthesize(speaker=speaker)
     await play_sound()
 
 
-show_mic_list()
-chosen_mic = get_mic()
+chosen_mic = get_mic(True)
 keyboard_input()
 speaker = asyncio.run(get_speaker(True))
 running = False
