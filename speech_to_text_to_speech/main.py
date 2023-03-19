@@ -8,9 +8,7 @@ import httpx
 import speech_recognition as sr
 import translatepy.translators
 from voicevox import Client
-import pyaudio
-import wave
-
+from speech_to_text_to_speech.playsound import play_sound
 
 SOUNDFILE_NAME = os.getenv("SOUNDFILE_NAME")
 RECORD_KEY = os.getenv("RECORD_KEY")
@@ -113,21 +111,6 @@ async def synthesize(speaker: int):
         else:
             logging.info("Finished synthesizing")
 
-
-async def play_sound():
-    chunk = 1024
-    f = wave.open(SOUNDFILE_NAME)
-    p = pyaudio.PyAudio()
-    stream = p.open(format=p.get_format_from_width(f.getsampwidth()),
-                    channels=f.getnchannels(),
-                    rate=f.getframerate(),
-                    output=True)
-    data = f.readframes(chunk)
-    while data:
-        stream.write(data)
-        data = f.readframes(chunk)
-    stream.stop_stream()
-    stream.close()
 
 
 
